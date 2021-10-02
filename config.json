@@ -1,10 +1,10 @@
 {
 	"general":{
-		"server_name":"Your Server Name",
+		"server_name":"YaJuuSenPaiServer",
 		"author": "Amazing WinslowEric(Please don't change this as respect to me.)",
 		"loop_interval": 36000000
 	},
-	"config":{
+	"as_slave":{
 		"origin_mode":{
 			"isEnabled": true,
 			"origins":[
@@ -14,9 +14,9 @@
 		},
 		"auto_mode":{
 			"isEnabled": true,
-			"config": "autoMode.json"
+			"config": "/autoMode.json"
 		},
-		"map_mode":{
+		"customMap_mode":{
 			"isEnabled": true,
 			"config": "/mapList.json"
 		}
