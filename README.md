@@ -1,16 +1,35 @@
 # Servsync
- Sync folders between your servers.
+ Sync folders and files between your servers.
 
-## Origin Mode
- Automatically pull files from a origin website/server.
  
 ## Slave Mode
- Automatically pull files from a server that is running another instance of Servsync
- for details, see __as Host__ 
+ Automatically sync files from a origin or server that is running another instance of Servsync
  
-## as Host
+ for details of Servsync as Master, see __as Master__ 
+ 
+### Origin Mode
+ You can determine a origin to download.
+ 
+ This will be executed at the first.
+ 
+### Auto Mode
+ You can determine a directory with URL, and Servsync will automatically sync from it using map.servsync.json
+ 
+ The target URL's server must be running Servsync at that directory as Master.
+ 
+ This will be executed after origin is pulled.
+### Custom Map Mode
+
+ You can customize map.servsync.json to indicate what files to sync.
+ 
+ 
+ This will be executed at last
+
+## as Master
  You can set what folders or certain files to sync, Servsync will automatically generate a Map File to tell Slave Servers what to download.
  
- A server could be Host and Slave, You can set files a VersionStamp, to ensure that the newest file is synced.
+ A server could be Master and Slave, You can set files a VersionStamp, to ensure that the newest file is synced.
  
-**For details about configuring Servsync, see example.config.json**
+ For first time, files will be initalized with a VersionStamp of 1.
+ 
+**For details about configuring Servsync, see config.json as a example.**
