@@ -1,3 +1,6 @@
+# Under Construction
+ Servsync is not ready for use.
+ 
 # Servsync
  Sync folders and files between your servers.
 
