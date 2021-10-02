@@ -1,0 +1,14 @@
+{
+	"url":"https://example-origin.com",
+	"checkHash": true,
+	"file_list":[
+		{
+			"remote": "/exampleR.data",
+			"local": "/var/example/exampleL.data"
+		},
+		{
+			"remote": "/cake/exampleR.data",
+			"local": "/var/example/cake/exampleL.data"
+		}
+	]
+}

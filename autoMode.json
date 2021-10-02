@@ -1,0 +1,12 @@
+{
+	"list": [
+		{
+			"remote":"https://www.example.com/data1",
+			"local":"/var/www/test.com"
+		},
+		{
+			"remote":"https://www.example.com/data2",
+			"local":"/var/www/test2.com"
+		}
+	]
+}

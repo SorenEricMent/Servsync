@@ -1,0 +1,28 @@
+{
+	"general":{
+		"server_name":"Your Server Name",
+		"author": "Amazing WinslowEric(Please don't change this as respect to me.)",
+		"loop_interval": 36000000
+	},
+	"config":{
+		"origin_mode":{
+			"isEnabled": true,
+			"origins":[
+				"/originList/origin1.json",
+				"/originList/origin2.json"
+			]
+		},
+		"auto_mode":{
+			"isEnabled": true,
+			"config": "autoMode.json"
+		},
+		"map_mode":{
+			"isEnabled": true,
+			"config": "/mapList.json"
+		}
+	},
+	"as_master":{
+		"isEnabled":true,
+		"config": "/master.json"
+	}
+}

@@ -1,0 +1,14 @@
+{
+	"url":"https://www.example.com",
+	"checkHash": true,
+	"file_list":[
+		{
+			"remote": "/exampleR.data",
+			"local": "/var/wwwroot/example.com/exampleL.data"
+		},
+		{
+			"remote": "/chocolate/exampleR.data",
+			"local": "/var/wwwroot/example.com/choco/exampleL.data"
+		}
+	]
+}
