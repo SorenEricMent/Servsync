@@ -2,7 +2,7 @@
  Sync folders and files between your servers.
 
  
-## Slave Mode
+## as Slave
  Automatically sync files from a origin or server that is running another instance of Servsync
  
  for details of Servsync as Master, see __as Master__ 
@@ -26,9 +26,9 @@
  This will be executed at last
 
 ## as Master
- You can set what folders or certain files to sync, Servsync will automatically generate a Map File to tell Slave Servers what to download.
+ You can set what folders or certain files to sync, for folders, Servsync will automatically generate a Map File to tell Slave Servers what to download.
  
- A server could be Master and Slave, You can set files a VersionStamp, to ensure that the newest file is synced.
+ A server could be Master and Slave in the meantime, You can set files a VersionStamp, to ensure that the newest file is synced.
  
  For first time, files will be initalized with a VersionStamp of 1.
  
