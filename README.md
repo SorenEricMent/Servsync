@@ -117,16 +117,18 @@ status:200 - Sync loop is being executing.
 
  #### /syncLoop
 
- This API start or stop sync loop
+ This API start or stop sync loop.
 
  > Input {"token":[Your token],"mode":"[start/pause]"}
  > Return {"status":[See below]}
 
- status:200 - Success 
+ status:200 - Success.
 
-status:201 - Sync loop status is already [start/pause]
+ status:201 - Sync loop status is already [start/pause].
 
  status:401 - API Token error.
+ 
+ status 402 - Undefined behaviour.
 
  HTTP 400 - Parsing Error.
 **For details about configuring Servsync, see config.json as a example.**

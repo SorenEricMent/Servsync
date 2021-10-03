@@ -1,6 +1,7 @@
 console.log('\x1B[36m%s\x1b[0m', "Servsync - Sync files between servers.");
 console.log('\x1B[35m%s\x1b[0m', "By WinslowEric.CN");
 var config;
+var isSyncLoopRunning = false;
 var slaveConfig = {
 	"originMode": null,
 	"autoMode": null,
@@ -100,12 +101,12 @@ if(masterConfig.isEnabled){
 	try {
 		var fileConfig = JSON.parse(fs.readFileSync(__dirname + masterConfig.config , function(err, data) {
 			if (err) {
-				console.log('\x1B[31m%s\x1b[0m', "Error when reading config.json");
+				console.log('\x1B[31m%s\x1b[0m', "Error when reading " + masterConfig.config);
 			}
 		}));
 		detailConfig.master = fileConfig;
 	} catch(e) {
-		console.log('\x1B[31m%s\x1b[0m', "Error when parsing config.json");
+		console.log('\x1B[31m%s\x1b[0m', "Error when parsing config.json" + masterConfig.config);
 	}
 }
 console.log(detailConfig);
@@ -122,34 +123,61 @@ app.post('/changeInFolderVerStamp', jsonParser, function (req, res) {
 		res.send({"status":401});	
 	}	
 });
-app.post('/changeFileVerStamp', function (req, res) {
+app.post('/changeFileVerStamp', jsonParser, function (req, res) {
 	if(req.body.token == config.general.api_token){
 		res.send({"status":200});
 	}else{
 		res.send({"status":401});	
 	}	
 });
-app.post('/syncStatus', function (req, res) {
+app.post('/syncStatus', jsonParser, function (req, res) {
 	if(req.body.token == config.general.api_token){
-		res.send({"status":200});
+		if(isSyncLoopRunning){
+			res.send({"status":200});
+		}else{
+			res.send({"status":201});
+		}
 	}else{
 		res.send({"status":401});	
 	}	
 });
-app.post('/syncLoop', function (req, res) {
+app.post('/syncLoop', jsonParser, function (req, res) {
 	if(req.body.token == config.general.api_token){
-		res.send({"status":200});
+		if(req.body.mode == "start"){
+			if(isSyncLoopRunning){
+				res.send({"status":201});
+			}else{
+				syncLoopBridge();
+				res.send({"status":200});
+			}
+		}else if(req.body.mode == "stop"){
+			if(isSyncLoopRunning){
+				clearTimeout(nextRecursion);
+				isSyncLoopRunning = false;
+				res.send({"status":200});
+			}else{
+				res.send({"status":201});
+			}
+		}else{
+			res.send({"status":402});
+		}
 	}else{
 		res.send({"status":401});	
 	}	
 });
-console.log('Servsync API Server running at http://127.0.0.1:1212/');
-
+console.log('\x1B[32m%s\x1b[0m','Servsync API Server running at http://127.0.0.1:1212/');
 console.log('\x1B[32m%s\x1b[0m', "Server " + config.general.server_name + " : " + slaveConfig.originMode.origins.length 
 			+ " Origins, " + detailConfig.auto.list.length + " Folders as slave, " + detailConfig.customMap.list.length + " custom maps, "
 			+ detailConfig.master.folders.length + " Folders as Master"
 			);
-
+function syncLoopBridge(){
+	(function syncLoop() {
+		isSyncLoopRunning = true;
+    	console.log("F**k setInterval");
+    	nextRecursion = setTimeout(syncLoop, 3000);//config.general.loop_interval in release.
+	})();
+}
+syncLoopBridge();
 
 function hash(file){
   var testFile = fs.readFileSync(file);
