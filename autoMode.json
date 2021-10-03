@@ -2,11 +2,15 @@
 	"list": [
 		{
 			"remote":"https://www.example.com/data1",
-			"local":"/var/www/test.com"
+			"local":"/var/www/test.com",
+			"map_need_decrypt": false,
+			"map_key": ""
 		},
 		{
 			"remote":"https://www.example.com/data2",
-			"local":"/var/www/test2.com"
+			"local":"/var/www/test2.com",
+			"map_need_decrypt": false,
+			"map_key": ""
 		}
 	]
 }

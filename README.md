@@ -16,12 +16,27 @@
 ### Origin Mode
 
  You can determine a origin to download.
+ 
+ After download file, servsync will generate/update map.servsync.json under that directory.
 
+ If a origin is defined as "Hyper-Master", files pulled from it will not be overwritten 
+ 
+ by Auto Mode and Custom Map Mode.
+ 
+ checkHash - if enabled, servsync will only overwrite if Hash of new file and legacy file
+ 
+ does not match, otherwise, servsync will always overwrite.
+ 
+ 
  This will be executed at the first.
 
 ### Auto Mode
 
- You can determine a directory with URL, and Servsync will automatically sync from it using map.servsync.json
+ You can determine a directory with URL, and Servsync will automatically sync from it using 
+
+ map.servsync.json
+
+
 
  The target URL's server must be running Servsync at that directory as Master.
 
@@ -36,16 +51,22 @@
 
 ## as Master
 
- You can set what folders or certain files to sync, for folders, Servsync will automatically generate a Map File to tell Slave Servers what to download.
+ You can set what folders or certain files to sync, for folders, Servsync will automatically 
 
- A server could be Master and Slave in the meantime, You can set files a VersionStamp, to ensure that the newest file is synced.
+ generate a Map File to tell Slave Servers what to download.
+
+ A server could be Master and Slave in the meantime, You can set files a VersionStamp, to 
+
+ ensure that the newest file is synced.
 
  For first time, files will be initalized with a VersionStamp of 1.
 
 
 ## Encryption
 
- If you don't want others to discover map.servsync.json, you can enable encryption and assign a encryption key, to ensure only authorized people can access map.servsync.json
+ If you don't want others to discover map.servsync.json, you can enable encryption and assign a 
+
+ encryption key, to ensure only authorized people can access map.servsync.json
 
  Please don't forget to change default encryption key.
 
@@ -63,8 +84,9 @@
 
  Servsync accept JSON-formatted data.
 
-
 #### changeInFolderVerStamp
+
+ This API change VerStamp of all the files in a directory into certain value.
 
  > Input {"token":[Your token],"folder":[path],"value":[Value you want]}
  > Return {"status":[See below]}
@@ -80,17 +102,20 @@ status:300 - Cannot find map file.
  Example of sending a request to Servsync Server
 
  >$.ajax({
- >type: 'POST',
- >url: '/changeInFolderVerStamp',
- >data: '{"token":"1145141919","folder":"/var/wwwroot/tobechanged","value":3}',
- >success: function(data) { alert('reply: ' + data); },
- >contentType: "application/json",
- >dataType: 'json'
+ >	type: 'POST',
+ >	url: '/changeInFolderVerStamp',
+ >	data: '{"token":"1145141919","folder":"/var/wwwroot/tobechanged","value":3}',
+ >	success: function(data) { alert('reply: ' + data); },
+ >	contentType: "application/json",
+ >	dataType: 'json'
  >});
- >####/changeFileVerStamp
- > This API change VerStamp of a certain file to a certain value.
- >Input {"token":[Your token],"file":[file path],"value":[Value you want]}
- >Return {"status":[See below]}
+
+#### /changeFileVerStamp
+
+This API change VerStamp of a certain file to a certain value.
+
+Input {"token":[Your token],"file":[file path],"value":[Value you want]}
+Return {"status":[See below]}
 
 status:200 - Successfully executed. 
 
@@ -117,18 +142,17 @@ status:200 - Sync loop is being executing.
 
  #### /syncLoop
 
- This API start or stop sync loop.
+ This API start or stop sync loop
 
  > Input {"token":[Your token],"mode":"[start/pause]"}
  > Return {"status":[See below]}
 
- status:200 - Success.
+ status:200 - Success 
 
- status:201 - Sync loop status is already [start/pause].
+status:201 - Sync loop status is already [start/pause]
 
  status:401 - API Token error.
- 
- status 402 - Undefined behaviour.
 
  HTTP 400 - Parsing Error.
+
 **For details about configuring Servsync, see config.json as a example.**

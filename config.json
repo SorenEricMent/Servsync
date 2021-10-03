@@ -5,7 +5,8 @@
 		"port": 1212,
 		"api_token": "1145141919810",
 		"encrypt_password": "senpai",
-		"encrypt_enabled": false
+		"encrypt_enabled": false,
+		"temp_directory": "/temp"
 	},
 	"as_slave":{
 		"origin_mode":{

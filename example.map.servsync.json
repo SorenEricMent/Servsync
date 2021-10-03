@@ -1,0 +1,18 @@
+{
+	"encryption": false,
+	"files": [
+		{
+			"name":"test.file",
+			"hash":"00aabbccddexample",
+			"version":1
+		},
+		{
+			"name":"test2.file",
+			"hash":"00ccddeeffexample",
+			"version":1
+		}
+	]
+	"folders": [
+	
+	]
+}

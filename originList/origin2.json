@@ -1,5 +1,6 @@
 {
 	"url":"https://example-origin.com",
+	"hyper_master": false,
 	"checkHash": true,
 	"file_list":[
 		{

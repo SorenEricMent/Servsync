@@ -1,5 +1,6 @@
 {
 	"url":"https://www.example.com",
+	"hyper_master": true,
 	"checkHash": true,
 	"file_list":[
 		{
