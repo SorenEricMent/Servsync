@@ -18,7 +18,20 @@ if(!moduleAvailable("crypto")){
 	console.log('\x1B[31m%s\x1b[0m', "Package crypto is required to run Servsync.");
 	process.exit(1);
 }
+if(!moduleAvailable("express")){
+	console.log('\x1B[31m%s\x1b[0m', "Package express is required to run Servsync.");
+	process.exit(1);
+}
+if(!moduleAvailable("body-parser")){
+	console.log('\x1B[31m%s\x1b[0m', "Package body-parser is required to run Servsync.");
+	process.exit(1);
+}
 const crypto = require("crypto");
+const express = require('express');
+const bodyParser = require('body-parser');
+var app = express();
+var jsonParser = bodyParser.json();
+
 const isLoggingEnabled = true; //Set to false if you don't want log.
 
 if(!isLoggingEnabled){
@@ -97,6 +110,41 @@ if(masterConfig.isEnabled){
 }
 console.log(detailConfig);
 
+app.listen(config.general.port, '127.0.0.1');
+app.get('/', function (req, res) {
+	//request.body
+	res.send('<h2>Servsync Servlet</h2><br/>Server:' + config.general.server_name);
+});
+app.post('/changeInFolderVerStamp', jsonParser, function (req, res) {
+	if(req.body.token == config.general.api_token){
+		res.send({"status":200});
+	}else{
+		res.send({"status":401});	
+	}	
+});
+app.post('/changeFileVerStamp', function (req, res) {
+	if(req.body.token == config.general.api_token){
+		res.send({"status":200});
+	}else{
+		res.send({"status":401});	
+	}	
+});
+app.post('/syncStatus', function (req, res) {
+	if(req.body.token == config.general.api_token){
+		res.send({"status":200});
+	}else{
+		res.send({"status":401});	
+	}	
+});
+app.post('/syncLoop', function (req, res) {
+	if(req.body.token == config.general.api_token){
+		res.send({"status":200});
+	}else{
+		res.send({"status":401});	
+	}	
+});
+console.log('Servsync API Server running at http://127.0.0.1:1212/');
+
 console.log('\x1B[32m%s\x1b[0m', "Server " + config.general.server_name + " : " + slaveConfig.originMode.origins.length 
 			+ " Origins, " + detailConfig.auto.list.length + " Folders as slave, " + detailConfig.customMap.list.length + " custom maps, "
 			+ detailConfig.master.folders.length + " Folders as Master"
@@ -112,13 +160,14 @@ function hash(file){
 function checkMapFileExist(folder){
 	try {
 		if(fs.existsSync(folder + "/map.servsync.json")) {
+		
 		}
 	}catch(err) {
 		console.error(err);
 	}
 }
 
-function createMapFile(folder, version){
+function createMapFile(folder, version, code){
 	var folderFileList = fs.readdirSync(folder);
 	mapData = {
 		"fileList":[]

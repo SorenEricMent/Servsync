@@ -1,8 +1,11 @@
 {
 	"general":{
-		"server_name":"YaJuuSenPaiServer",
-		"author": "Amazing WinslowEric(Please don't change this as respect to me.)",
-		"loop_interval": 36000000
+		"server_name": "YaJuuSenPaiServer",
+		"loop_interval": 36000000,
+		"port": 1212,
+		"api_token": "1145141919810",
+		"encrypt_password": "senpai",
+		"encrypt_enabled": false
 	},
 	"as_slave":{
 		"origin_mode":{
