@@ -36,8 +36,16 @@ const https = require('https');
 var app = express();
 var jsonParser = bodyParser.json();
 
-const isLoggingEnabled = true; //Set to false if you don't want log.
+Array.prototype.remove = function(index) {
+	this.splice(index, 1);
+};
 
+Array.prototype.indexOfN = function(value){
+	return this.findIndex(function(item, i){
+		return item.name == value;
+	});
+};
+const isLoggingEnabled = true; //Set to false if you don't want log.
 if(!isLoggingEnabled){
 	console.log = function (nonsense){};
 }
@@ -143,6 +151,22 @@ app.post('/syncStatus', jsonParser, function (req, res) {
 		res.send({"status":401});	
 	}	
 });
+
+app.post('/encryptLegacyMap', jsonParser, function (req, res) {
+	if(req.body.token == config.general.api_token){
+		res.send({"status":200});
+	}else{
+		res.send({"status":401});	
+	}
+});
+
+app.post('/decryptLegacyMap', jsonParser, function (req, res) {
+	if(req.body.token == config.general.api_token){
+		res.send({"status":200});
+	}else{
+		res.send({"status":401});	
+	}
+});
 app.post('/syncLoop', jsonParser, function (req, res) {
 	if(req.body.token == config.general.api_token){
 		if(req.body.mode == "start"){
@@ -167,7 +191,7 @@ app.post('/syncLoop', jsonParser, function (req, res) {
 		res.send({"status":401});	
 	}	
 });
-console.log('\x1b[5m%s\x1b[0m','Servsync API Server running at http://127.0.0.1:1212/');
+console.log('\x1b[5m%s\x1b[0m','Servsync API Server running at http://127.0.0.1:'+config.general.port+"/");
 console.log('\x1B[32m%s\x1b[0m', "Server " + config.general.server_name + " : " + slaveConfig.originMode.origins.length 
 			+ " Origins, " + detailConfig.auto.list.length + " Folders as Slave, " + detailConfig.customMap.list.length + " custom maps, "
 			+ detailConfig.master.folders.length + " Folders as Master");
@@ -235,8 +259,32 @@ function syncLoopBridge(){
     					}
     				}
     			}else{
-    				for(var j=0;j<detailConfig.origin[i].file_list.length;j++){
-    					
+					for(var j=0;j<detailConfig.origin[i].file_list.length;j++){
+    					var originURLObject = new URL(detailConfig.origin[i].url);
+    					if(originURLObject.protocol == "https"){
+    						var useProtocol = https;
+    					}else if(originURLObject.protocol == "http"){
+    						var useProtocol = http;
+    					}
+    					var currentFile = detailConfig.origin[i].file_list[i].local;
+    					var targetPath = path.dirname(currentFile);
+    					var fileStream = fs.createWriteStream(currentFile);
+    					var getRemoteFile = useProtocol.get(detailConfig.origin[i].url, function(response) {
+							response.pipe(tempFileStream);
+						});
+    					if(!checkMapFileExist(targetPath)){
+							createMapFile(targetPath + "/", Infinity);
+    					}
+    					try {
+							var mapFileTemp = JSON.parse(fs.readFileSync(targetPath + "/map.servsync.json", function(err, data) {
+								if (err) {
+									console.log('\x1B[31m%s\x1b[0m', "Error when reading " + targetPath + "/map.servsync.json");
+								}
+							}));
+							currentMapFile = mapFileTemp;
+						} catch(e) {
+							console.log('\x1B[31m%s\x1b[0m', "Error when parsing " + targetPath + "/map.servsync.json");
+						}
     				}
     			}
     		}else{
@@ -266,6 +314,8 @@ function checkFileExist(target){
 	try {
 		if(fs.existsSync(target)) {
 			return true;
+		}else{
+			return false;
 		}
 	}catch(err) {
 		return false;
@@ -275,6 +325,68 @@ function checkMapFileExist(folder){
 	return checkFileExist(folder + "map.servsync.json");
 }
 
+function encrypt(plainText, key, outputEncoding = "base64") {
+    const cipher = crypto.createCipheriv("aes-128-ecb", key, null);
+    return Buffer.concat([cipher.update(plainText), cipher.final()]).toString(outputEncoding);
+}
+
+function decrypt(cipherText, key, outputEncoding = "utf8") {
+	cipherText = Buffer.from(cipherText, "base64");
+    const cipher = crypto.createDecipheriv("aes-128-ecb", key, null);
+    return Buffer.concat([cipher.update(cipherText), cipher.final()]).toString(outputEncoding);
+}
+
+function updateMapFile(folder,encrypt_key){
+	var folderFileList = fs.readdirSync(folder);
+	try {
+		var readMapFile = JSON.parse(fs.readFileSync(__dirname + folder + "map.servsync.json" , function(err, data) {
+			if (err) {
+				console.log('\x1B[31m%s\x1b[0m', "Error when reading " + folder + "map.servsync.json");
+			}
+		}));
+		var mapToBeUpdate = readMapFile;
+	} catch(e) {
+		console.log('\x1B[31m%s\x1b[0m', "Error when parsing " + folder + "map.servsync.json");
+	}
+	if(config.general.encrypt_enabled){
+		
+	}
+	for(var i=0;i<mapToBeUpdate.files.length;i++){
+		if(!checkFileExist(folder + mapToBeUpdate.files[i].name) || !pathType(folder + mapToBeUpdate.files[i].name)){
+			mapToBeUpdate.files.remove(i);
+		}
+	}
+	for(var i=0;i<mapToBeUpdate.folders.length;i++){
+		if(!checkFileExist(folder + mapToBeUpdate.files[i].name) || pathType(folder + mapToBeUpdate.files[i].name)){
+			mapToBeUpdate.folders.remove(i);
+		}
+	}
+	for(var i=0;i<folderFileList.length;i++){
+		if(pathType(folder + folderFileList[i])){
+			if(mapToBeUpdate.indexOfN(folderFileList[i]) == -1){
+				detectedNewFile = {
+					"name":folderFileList[i],
+					"hash":hash(folder + folderFileList[i]),
+					"version":config.general.default_verstamp
+				};
+				if(general.encrypt_enabled){
+					
+				}
+				mapToBeUpdate.files.push(detectedNewFile);
+			}
+		}else{
+			if(mapToBeUpdate.indexOfN(folderFileList[i]) == -1){
+				mapToBeUpdate.folders.push(folderFileList[i]);
+			}
+		}
+	}
+	fs.writeFile(folder + "map.servsync.json", JSON.stringify(mapToBeUpdate), function(err) {
+		if(err) {
+			console.log("Failed to update map.servsync.json at " + folder);
+		}
+		console.log("Updated map.servsync.json at " + folder);
+	}); 
+}
 function createMapFile(folder, version, code){
 	var folderFileList = fs.readdirSync(folder);
 	mapData = {
@@ -282,13 +394,20 @@ function createMapFile(folder, version, code){
 		"files":[],
 		"folders":[]
 	};
-	for(var i=0;i<fileList.length;i++){
-		mapData.fileList.push(
+	for(var i=0;i<folderFileList.length;i++){
+		if(pathType(folderFileList[i])){
+			mapData.files.push(
 			{
 				"name":folderFileList[i],
 				"hash": hash(folder + "/" + folderFileList[i]),
 				"version": version,
 			});
+		}else{
+			mapData.folders.push(
+			{
+				"name":folderFileList[i]
+			});
+		}
 	}
 	fs.writeFile(folder + "map.servsync.json", JSON.stringify(mapData), function(err) {
 		if(err) {
@@ -297,7 +416,13 @@ function createMapFile(folder, version, code){
 		console.log("Created map file at" + folder);
 	});
 }
-
+function convertKey(code){
+	if(code.length >= 16){
+		return code;
+	}else{
+		return crypto.createHash('sha1').update(code).digest("base64").slice(0,16);
+	}
+}
 function pathType(path){
 	return fs.statSync(path).isFile();
 }

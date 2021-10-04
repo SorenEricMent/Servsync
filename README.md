@@ -154,5 +154,12 @@ status:201 - Sync loop status is already [start/pause]
  status:401 - API Token error.
 
  HTTP 400 - Parsing Error.
-
+ 
+ #### /encryptLegacyMap
+ 
+ This API convert a unencrypted map to encrypted.
+ 
+ #### /decryptLegacyMap
+ 
+ This API convert a encrypted map to decrypted.
 **For details about configuring Servsync, see config.json as a example.**
