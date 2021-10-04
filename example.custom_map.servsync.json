@@ -4,11 +4,13 @@
 		{
 			"name":"test.file",
 			"hash":"00aabbccddexample",
+			"remote_name":"name_on_remote.file",
 			"version":1
 		},
 		{
 			"name":"test2.file",
 			"hash":"00ccddeeffexample",
+			"remote_name":"name2_on_remote.file",
 			"version":1
 		}
 	],

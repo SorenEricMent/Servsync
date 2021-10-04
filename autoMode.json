@@ -4,13 +4,17 @@
 			"remote":"https://www.example.com/data1",
 			"local":"/var/www/test.com",
 			"map_need_decrypt": false,
-			"map_key": ""
+			"map_key": "",
+			"delete_local_file_if_not_exist_in_map": false,
+			"trust_delete_declaration":false
 		},
 		{
 			"remote":"https://www.example.com/data2",
 			"local":"/var/www/test2.com",
 			"map_need_decrypt": false,
-			"map_key": ""
+			"map_key": "",
+			"delete_local_file_if_not_exist_in_map": false,
+			"trust_delete_declaration":false
 		}
 	]
 }

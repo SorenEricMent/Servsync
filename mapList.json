@@ -1,5 +1,10 @@
 {
 	"list": [
-		"https://www.example.com/map.servsync.json"
+		{
+			"url":"https://www.example.com/custom_map.servsync.json",
+			"need_decrypt":false,
+			"decrypt_key":false,
+			"trust_delete_declaration":false
+		}
 	]
 }
