@@ -126,6 +126,20 @@ app.get('/', function (req, res) {
 	//request.body
 	res.send('<h2>Servsync Servlet</h2><br/>Server:' + config.general.server_name);
 });
+app.post('/serverGeneral', jsonParser, function(req, res) {
+	if(req.body.token == config.general.api_token){
+		var serverGeneral = {
+			"server_name": config.general.server_name,
+			"encryption": config.general.encrypt_enabled,
+			"as_slave":{
+				
+			},
+			"as_master": 0
+		}
+	}else{
+		res.send({"status":401});	
+	}
+})
 app.post('/changeInFolderVerStamp', jsonParser, function (req, res) {
 	if(req.body.token == config.general.api_token){
 		res.send({"status":200});
@@ -154,7 +168,13 @@ app.post('/syncStatus', jsonParser, function (req, res) {
 
 app.post('/encryptLegacyMap', jsonParser, function (req, res) {
 	if(req.body.token == config.general.api_token){
-		res.send({"status":200});
+		encryptKey = convertKey(req.body.encrypt_key);
+		targetLocation = req.body.path;
+		if(checkMapFileExist(targetLocation){
+			res.send({"status":200});
+		}else{
+			res.send({"status":300});
+		}
 	}else{
 		res.send({"status":401});	
 	}
@@ -162,6 +182,13 @@ app.post('/encryptLegacyMap', jsonParser, function (req, res) {
 
 app.post('/decryptLegacyMap', jsonParser, function (req, res) {
 	if(req.body.token == config.general.api_token){
+		decryptKey = converyKey(config.general.encrypt_key);
+		targetLocation = req.body.path;
+		if(checkMapFileExist(targetLocation){
+			res.send({"status":200});
+		}else{
+			res.send({"status":300});
+		}
 		res.send({"status":200});
 	}else{
 		res.send({"status":401});	
