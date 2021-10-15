@@ -460,3 +460,17 @@ function moduleAvailable(name) {
     } catch(e){}
     return false;
 }
+
+function readJSONFile(path){
+	try {
+		var dataFromFile = JSON.parse(fs.readFileSync(path, function(err, data) {
+		if (err) {
+			console.log('\x1B[31m%s\x1b[0m', "Error when reading " + path);
+		}
+	}));
+	} catch(e) {
+		console.log('\x1B[31m%s\x1b[0m', "Error when parsing " + path);
+		return {"isSuccess":false,"data":null};
+	}
+	return {"isSuccess":false,"data":dataFromFile};
+}
