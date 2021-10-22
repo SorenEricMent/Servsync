@@ -69,56 +69,24 @@ masterConfig = config.as_master;
 if(slaveConfig.originMode.isEnabled){
 	detailConfig.origin = [];
 	for(var i=0;i<slaveConfig.originMode.origins.length;i++){
-		try {
-			var fileConfig = JSON.parse(fs.readFileSync(__dirname + slaveConfig.originMode.origins[i] , function(err, data) {
-			if (err) {
-				console.log('\x1B[31m%s\x1b[0m', "Error when reading " + slaveConfig.originMode.origins[i]);
-			}
-		}));
+		var fileConfig = readJSONFile(__dirname + slaveConfig.originMode.origins[i]); 
 		detailConfig.origin.push(fileConfig);
-		} catch(e) {
-			console.log('\x1B[31m%s\x1b[0m', "Error when parsing " + slaveConfig.originMode.origins[i]);
-		}
 	}
 }
 
 if(slaveConfig.autoMode.isEnabled){
-	try {
-		var fileConfig = JSON.parse(fs.readFileSync(__dirname + slaveConfig.autoMode.config , function(err, data) {
-			if (err) {
-				console.log('\x1B[31m%s\x1b[0m', "Error when reading " + slaveConfig.autoMode.config);
-			}
-		}));
+		var fileConfig = readJSONFile(__dirname + slaveConfig.autoMode.config);
 		detailConfig.auto = fileConfig;
-	} catch(e) {
-		console.log('\x1B[31m%s\x1b[0m', "Error when parsing " + slaveConfig.autoMode.config);
-	}
 }
 
 if(slaveConfig.customMapMode.isEnabled){
-	try {
-		var fileConfig = JSON.parse(fs.readFileSync(__dirname + slaveConfig.customMapMode.config , function(err, data) {
-			if (err) {
-				console.log('\x1B[31m%s\x1b[0m', "Error when reading " + slaveConfig.customMapMode.config);
-			}
-		}));
-		detailConfig.customMap = fileConfig;
-	} catch(e) {
-		console.log('\x1B[31m%s\x1b[0m', "Error when parsing " + slaveConfig.customMapMode.config);
-	}
+	var fileConfig = readJSONFile(__dirname + slaveConfig.customMapMode.config);
+	detailConfig.customMap = fileConfig;
 }
 
 if(masterConfig.isEnabled){
-	try {
-		var fileConfig = JSON.parse(fs.readFileSync(__dirname + masterConfig.config , function(err, data) {
-			if (err) {
-				console.log('\x1B[31m%s\x1b[0m', "Error when reading " + masterConfig.config);
-			}
-		}));
-		detailConfig.master = fileConfig;
-	} catch(e) {
-		console.log('\x1B[31m%s\x1b[0m', "Error when parsing config.json" + masterConfig.config);
-	}
+	var fileConfig = readJSONFile(__dirname + masterConfig.config);
+	detailConfig.master = fileConfig;
 }
 
 app.listen(config.general.port, '127.0.0.1');
@@ -265,14 +233,15 @@ function syncLoopBridge(){
     						for(var k=0;k<currentMapFile.files.length;k++){
     							if(currentMapFile.files[i].name == path.basename(currentFile)){
     								break;
+    							}else{
+    								searchIndex++;
     							}
-    							searchIndex++;
     						}
     						var originHash = currentMapFile.files[searchIndex].hash;
     						var newHash = hash(tempFile);
     						if(originHash != newHash){
     							var doWriteFile = true;
-    							fs.unlinkSync(tempFile);
+    							fs.unlink(tempFile);
     						}else{
     							fs.unlinkSync(targetPath + "/" + currentMapFile.files[searchIndex].name);
     						}
@@ -281,7 +250,7 @@ function syncLoopBridge(){
     					}
     					if(doWriteFile){
     						fs.copyFileSync(tempFile,targetPath + "/" + currentMapFile.files[searchIndex].name);
-    						fs.unlinkSync(tempFile);
+    						fs.unlink(tempFile);
     						currentMapFile.files[searchIndex].hash = newHash;
     					}
     				}
@@ -472,5 +441,5 @@ function readJSONFile(path){
 		console.log('\x1B[31m%s\x1b[0m', "Error when parsing " + path);
 		return {"isSuccess":false,"data":null};
 	}
-	return {"isSuccess":false,"data":dataFromFile};
+	return {"isSuccess":true,"data":dataFromFile};
 }
